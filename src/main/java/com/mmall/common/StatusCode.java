@@ -4,12 +4,12 @@ public enum StatusCode{
     SUCCESS(0, "SUCCESS"),
     ERROR(1, "ERROR"),
     LOGIN_REQUIRE(2, "LOGIN_REQUIRE"),
-    OTHER_ISSUES(3, "OTHER_ISSUES");
+    ILLEGAL_PARAMETERS(3, "ILLEGAL_PARAMETERS");
 
     private int code;
     private String name;
 
-    private StatusCode(int code, String name) {
+    StatusCode(int code, String name) {
         this.code = code;
         this.name = name;
     }

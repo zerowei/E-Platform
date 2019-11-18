@@ -19,4 +19,6 @@ public interface UserService {
     ReturnResponse<User> updateInformation(User user);
 
     ReturnResponse<User> getInformation(Integer userId);
+
+    ReturnResponse<String> checkSuperUserRole(User user);
 }

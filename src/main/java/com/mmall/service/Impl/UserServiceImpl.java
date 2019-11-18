@@ -112,4 +112,10 @@ public class UserServiceImpl implements UserService {
         user.setPassword("");
         return ReturnResponse.ReturnSuccess("查询用户信息成功", user);
     }
+
+    public ReturnResponse<String> checkSuperUserRole(User user) {
+        if (Const.SUPERUSER.equals(user.getRole()))
+            return ReturnResponse.ReturnSuccess();
+        return ReturnResponse.ReturnError();
+    }
 }
