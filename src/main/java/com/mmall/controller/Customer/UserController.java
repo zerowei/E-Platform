@@ -7,7 +7,7 @@ import com.mmall.pojo.User;
 import com.mmall.service.UserService;
 import com.mmall.utils.CookieUtil;
 import com.mmall.utils.JsonUtil;
-import com.mmall.utils.RedisUtil;
+import com.mmall.utils.RedisShardedUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,7 +32,7 @@ public class UserController {
         ReturnResponse<User> returnResponse = userService.login(username, password);
         if (returnResponse.isSuccess()) {
             CookieUtil.writeLoginToken(response, httpSession.getId());
-            RedisUtil.setEx(httpSession.getId(), JsonUtil.obj2String(returnResponse.getData()), Const.expireTime.sessionExpireTime);
+            RedisShardedUtil.setEx(httpSession.getId(), JsonUtil.obj2String(returnResponse.getData()), Const.expireTime.sessionExpireTime);
         }
         return returnResponse;
     }
@@ -42,7 +42,7 @@ public class UserController {
     public ReturnResponse<String> logout(HttpServletRequest request, HttpServletResponse response) {
         String token = CookieUtil.readLoginToken(request);
         CookieUtil.delLoginToken(request, response);
-        RedisUtil.del(token);
+        RedisShardedUtil.del(token);
         return ReturnResponse.ReturnErrorByMessage("成功登出");
     }
 
@@ -77,7 +77,7 @@ public class UserController {
         if (StringUtils.isEmpty(cookie)) {
             return ReturnResponse.ReturnError(StatusCode.LOGIN_REQUIRE.getCode(), "请先登陆再查看个人信息");
         }
-        String userInfo = RedisUtil.get(cookie);
+        String userInfo = RedisShardedUtil.get(cookie);
         User user = JsonUtil.string2Obj(userInfo, User.class);
         if (user == null) return ReturnResponse.ReturnErrorByMessage("您未登陆，请先登陆");
         return userService.updatePwdWhileLogin(user, passwordOld, passwordNew);
@@ -90,7 +90,7 @@ public class UserController {
         if (StringUtils.isEmpty(cookie)) {
             return ReturnResponse.ReturnError(StatusCode.LOGIN_REQUIRE.getCode(), "请先登陆再查看个人信息");
         }
-        String userInfo = RedisUtil.get(cookie);
+        String userInfo = RedisShardedUtil.get(cookie);
         User cUser = JsonUtil.string2Obj(userInfo, User.class);
         if (cUser == null) return ReturnResponse.ReturnErrorByMessage("您未登陆，请先登陆");
         if (cUser.getEmail().equals(user.getEmail())) return ReturnResponse.ReturnErrorByMessage("您正在使用此邮箱，请换成另外一个邮箱");
@@ -98,7 +98,7 @@ public class UserController {
         user.setUsername(cUser.getUsername());
         ReturnResponse<User> returnResponse = userService.updateInformation(user);
         if (returnResponse.isSuccess()) {
-            RedisUtil.setEx(cookie, JsonUtil.obj2String(returnResponse.getData()), Const.expireTime.sessionExpireTime);
+            RedisShardedUtil.setEx(cookie, JsonUtil.obj2String(returnResponse.getData()), Const.expireTime.sessionExpireTime);
         }
         return returnResponse;
     }
@@ -110,7 +110,7 @@ public class UserController {
         if (StringUtils.isEmpty(cookie)) {
             return ReturnResponse.ReturnError(StatusCode.LOGIN_REQUIRE.getCode(), "请先登陆再查看个人信息");
         }
-        String userInfo = RedisUtil.get(cookie);
+        String userInfo = RedisShardedUtil.get(cookie);
         User user = JsonUtil.string2Obj(userInfo, User.class);
         if (user != null) return ReturnResponse.ReturnSuccessByData(user);
         return ReturnResponse.ReturnErrorByMessage("获取用户信息失败");

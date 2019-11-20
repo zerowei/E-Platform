@@ -6,7 +6,7 @@ import com.mmall.pojo.User;
 import com.mmall.service.UserService;
 import com.mmall.utils.CookieUtil;
 import com.mmall.utils.JsonUtil;
-import com.mmall.utils.RedisUtil;
+import com.mmall.utils.RedisShardedUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +29,7 @@ public class UserManagerController {
             int role = returnResponse.getData().getRole();
             if (role != Const.SUPERUSER) return ReturnResponse.ReturnErrorByMessage("登陆账户非管理员");
             CookieUtil.writeLoginToken(response, session.getId());
-            RedisUtil.setEx(session.getId(), JsonUtil.obj2String(returnResponse.getData()), Const.expireTime.sessionExpireTime);
+            RedisShardedUtil.setEx(session.getId(), JsonUtil.obj2String(returnResponse.getData()), Const.expireTime.sessionExpireTime);
             return ReturnResponse.ReturnSuccess("管理员登陆成功", returnResponse.getData());
         }
         return returnResponse;

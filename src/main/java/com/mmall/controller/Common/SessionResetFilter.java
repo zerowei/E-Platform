@@ -4,7 +4,7 @@ import com.mmall.common.Const;
 import com.mmall.pojo.User;
 import com.mmall.utils.CookieUtil;
 import com.mmall.utils.JsonUtil;
-import com.mmall.utils.RedisUtil;
+import com.mmall.utils.RedisShardedUtil;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.*;
@@ -24,10 +24,10 @@ public class SessionResetFilter implements Filter {
         String cookie = CookieUtil.readLoginToken(request);
 
         if (!StringUtils.isEmpty(cookie)) {
-            String userInfo = RedisUtil.get(cookie);
+            String userInfo = RedisShardedUtil.get(cookie);
             User user = JsonUtil.string2Obj(userInfo, User.class);
             if (user != null) {
-                RedisUtil.expire(cookie, Const.expireTime.sessionExpireTime);
+                RedisShardedUtil.expire(cookie, Const.expireTime.sessionExpireTime);
             }
         }
         filterChain.doFilter(servletRequest, servletResponse);

@@ -2,11 +2,11 @@ package com.mmall.service.Impl;
 
 import com.mmall.common.Const;
 import com.mmall.common.ReturnResponse;
-import com.mmall.common.TokenCache;
 import com.mmall.dao.UserMapper;
 import com.mmall.pojo.User;
 import com.mmall.service.UserService;
 import com.mmall.utils.MD5Util;
+import com.mmall.utils.RedisShardedUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,13 +67,13 @@ public class UserServiceImpl implements UserService {
         int userCount = userMapper.checkAnswer(username, question, answer);
         if (userCount == 0) return ReturnResponse.ReturnErrorByMessage("答案错误");
         String token = UUID.randomUUID().toString();
-        TokenCache.setCache(Const.PREFIX + username, token);
+        RedisShardedUtil.setEx(Const.PREFIX + username, token, 60 * 60 * 12);
         return ReturnResponse.ReturnSuccess("答案正确", token);
     }
 
     public ReturnResponse<String> updatePassword(String username, String passwordNew, String token) {
         if (StringUtils.isBlank(token)) return ReturnResponse.ReturnErrorByMessage("token不能为空");
-        String tokenUse = TokenCache.getCache(Const.PREFIX + username);
+        String tokenUse = RedisShardedUtil.get(Const.PREFIX + username);
         if (tokenUse == null) return ReturnResponse.ReturnErrorByMessage("token失效或者获取token时出错");
         if (tokenUse.equals(token)) {
             String MD5Password = MD5Util.MD5EncodeUtf8(passwordNew);
