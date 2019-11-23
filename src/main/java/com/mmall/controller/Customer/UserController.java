@@ -26,7 +26,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/login.do", method = RequestMethod.POST)
+    @RequestMapping(value = "/login.do", method = RequestMethod.GET)
     @ResponseBody
     public ReturnResponse<User> login(String username, String password, HttpSession httpSession, HttpServletResponse response) throws Exception{
         ReturnResponse<User> returnResponse = userService.login(username, password);

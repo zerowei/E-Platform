@@ -17,8 +17,8 @@ public class Const {
     public static final Set<String> ORDERSET = new HashSet<String>(){{add("price_asc");add("price_desc");}};
 
     public enum SaleStatus{
-        ON_SALE(0, "ON_SALE"),
-        OFF_SALE(1, "OF_SALE");
+        ON_SALE(1, "ON_SALE"),
+        OFF_SALE(0, "OF_SALE");
 
         private int code;
         private String name;
@@ -52,7 +52,7 @@ public class Const {
     public enum OrderStatus{
         CANCEL(0, "订单已取消"),
         WAIT_BUYER_PAY(10, "等待买家支付"),
-        PAID(30, "订单已支付"),
+        PAID(20, "订单已支付"),
         SHIPPED(40, "订单已发货"),
         ORDER_SUCCESS(50, "订单已完成"),
         ORDER_CLOSED(60, "订单已关闭");

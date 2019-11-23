@@ -10,18 +10,19 @@ import com.mmall.utils.RedisShardedUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 @Controller
-@RequestMapping("/user/manager")
+@RequestMapping("/manage/user")
 public class UserManagerController {
     @Autowired
     UserService userService;
 
-    @RequestMapping("/login.do")
+    @RequestMapping(value = "/login.do", method = RequestMethod.GET)
     @ResponseBody
     public ReturnResponse<User> login(HttpSession session, HttpServletResponse response, String username, String password) throws Exception{
         ReturnResponse<User> returnResponse = userService.login(username, password);

@@ -27,6 +27,7 @@ import com.mmall.vo.OrderVO;
 import com.mmall.vo.ShippingVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -360,7 +361,7 @@ public class OrderServiceImpl implements OrderService {
 
                 File target = new File(path, QRName);
                 try {
-                    FtpUtil.uploadFile(new ArrayList<File>(Arrays.asList(target)));
+                    FtpUtil.uploadFile(new ArrayList<>(Arrays.asList(target)));
                 } catch (Exception e) {
                     log.error("上传二维码到FTP服务器失败", e);
                 }
@@ -465,5 +466,23 @@ public class OrderServiceImpl implements OrderService {
             return ReturnResponse.ReturnSuccessByMessage("发货成功");
         }
         return ReturnResponse.ReturnErrorByMessage("订单处于不可发货状态");
+    }
+
+    public void closeOrder(int hour) {
+        Date createTime = DateUtils.addHours(new Date(), -hour);
+        List<Order> orderList = orderMapper.selectOrderByStatusCreateTime(Const.OrderStatus.WAIT_BUYER_PAY.getCode(), DateUtil.transfer2Str(createTime));
+        for (Order order : orderList) {
+            List<OrderItem> orderItemList = orderItemMapper.getByOrderNum(order.getOrderNo());
+            for (OrderItem orderItem : orderItemList) {
+                Integer stock = productMapper.selectStockByPrimaryKey(orderItem.getProductId());
+                if (stock == null) continue;
+                Product product = new Product();
+                product.setId(orderItem.getProductId());
+                product.setStock(stock + orderItem.getQuantity());
+                productMapper.updateByPrimaryKeySelective(product);
+            }
+            orderMapper.closeOrderByPrimaryKey(order.getId());
+            log.info("关闭订单，订单号为{}", order.getOrderNo());
+        }
     }
 }

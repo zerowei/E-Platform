@@ -34,6 +34,7 @@ public class FileServiceImpl implements FileService {
             finalFile.delete();
         } catch (IOException e) {
             log.error("上传文件到指定目录失败", e);
+            return null;
         }
         return finalFile.getName();
     }

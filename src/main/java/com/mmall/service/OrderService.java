@@ -30,4 +30,6 @@ public interface OrderService {
     ReturnResponse<PageInfo> searchOrderManage(Long orderNum, int pageNum, int pageSize);
 
     ReturnResponse<String> sendGoods(Long orderNum);
+
+    void closeOrder(int hour);
 }

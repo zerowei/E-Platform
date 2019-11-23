@@ -80,8 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryMapper.selectByPrimaryKey(categoryId);
         if(category != null){
             categorySet.add(category);
-        } else
-            return;
+        }
         List<Category> categoryList = categoryMapper.selectCategoryChildrenByParentId(categoryId);
         for(Category categoryItem : categoryList){
             findChildCategory(categorySet,categoryItem.getId());

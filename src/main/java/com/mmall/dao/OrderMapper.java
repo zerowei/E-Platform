@@ -25,4 +25,8 @@ public interface OrderMapper {
     List<Order> selectByUserId(Integer userId);
 
     List<Order> selectAll();
+
+    List<Order> selectOrderByStatusCreateTime(@Param("status") int status, @Param("createTime") String createTime);
+
+    int closeOrderByPrimaryKey(Integer id);
 }

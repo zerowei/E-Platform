@@ -88,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
         productVO.setStatus(product.getStatus());
 
         productVO.setImageAddressPrefix(PropertiesUtil.getProperties(PREFIX));
-        Category category = categoryMapper.selectByPrimaryKey(product.getId());
+        Category category = categoryMapper.selectByPrimaryKey(product.getCategoryId());
         productVO.setParentId(category.getParentId());
         productVO.setCreateTime(DateUtil.transfer2Str(product.getCreateTime()));
         productVO.setUpdateTime(DateUtil.transfer2Str(product.getUpdateTime()));
