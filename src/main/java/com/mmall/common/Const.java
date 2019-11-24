@@ -158,4 +158,8 @@ public class Const {
             this.name = name;
         }
     }
+
+    public interface CloseOrder {
+        String LOCK_KEY = "LOCK_KEY";
+    }
 }
